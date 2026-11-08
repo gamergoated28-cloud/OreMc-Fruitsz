@@ -1,0 +1,34 @@
+name: Build OreMC Fruits
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: maven
+
+      - name: Extract source
+        run: |
+          unzip -o OreMCFruits-Source-2.zip
+
+      - name: Compile plugin
+        run: mvn -f OreMCFruits/pom.xml clean package
+
+      - name: Upload JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: OreMCFruits-JAR
+          path: OreMCFruits/target/*.jar
